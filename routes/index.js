@@ -17,26 +17,28 @@ var randomString = function(length) {
   return text;
 }
 
-router.post('/javascript', function(req, res, next) {
+function executionEnvironment (language, command, fileName, req, res) {
   var randomDirName = new Promise(function (resolve, reject) {
     resolve(randomString(Math.floor(Math.random() * (12 - 2 + 1)) + 2));
   });
 
   randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir public/javascripts/' + String(dirResponse))
+    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
       .then(function (response) {
-        return execPromise('touch public/javascripts/' + String(dirResponse) + '/sample.js')
+        console.log(response)
+        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
           .then(function (response) {
+            console.log(response)
             return dirResponse;
           })
       })
   })
   .then(function (dirResponse) {
-    fs.writeFile('public/javascripts/' + String(dirResponse) + '/sample.js', req.body.data, function (err) {
+    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only --rm -v `pwd`/public/javascripts/' + String(dirResponse) + '/:/data:ro sengine/javascript node sample.js')
+      execPromise('docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
         .then(function (response) {
           console.log('stderr:  ' + response.stderr)
           // need to get standard errors working!!
@@ -49,10 +51,26 @@ router.post('/javascript', function(req, res, next) {
         })
         .then(function (response) {
           console.log("about to delete");
-          execPromise('rm -rf public/javascripts/' + String(dirResponse))
+          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse))
         });
     });
   });
+}
+
+router.post('/javascript', function(req, res, next) {
+  executionEnvironment('javascript', 'node', 'sample.js', req, res);
+});
+
+router.post('/ruby', function(req, res, next) {
+  executionEnvironment('ruby', 'ruby', 'sample.rb', req, res);
+});
+
+router.post('/python', function(req, res, next) {
+  executionEnvironment('python', 'python', 'sample.py', req, res);
+});
+
+router.post('/php', function(req, res, next) {
+  executionEnvironment('php', 'php', 'sample.php', req, res);
 });
 
 module.exports = router;
