@@ -17,7 +17,7 @@ var randomString = function(length) {
   return text;
 }
 
-router.post('/docker', function(req, res, next) {
+router.post('/javascript', function(req, res, next) {
   var randomDirName = new Promise(function (resolve, reject) {
     resolve(randomString(Math.floor(Math.random() * (12 - 2 + 1)) + 2));
   });
@@ -32,12 +32,13 @@ router.post('/docker', function(req, res, next) {
       })
   })
   .then(function (dirResponse) {
-    fs.writeFile('public/javascripts/' + String(dirResponse) + '/sample.js', 'console.log(('+req.body.data+')())', function (err) {
+    fs.writeFile('public/javascripts/' + String(dirResponse) + '/sample.js', req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
-      execPromise('docker run --read-only --rm -v `pwd`/public/javascripts/' + String(dirResponse) + '/:/data:ro java-lamp/app-testing node sample.js')
-      // execPromise('docker run --rm -v `pwd`/public/javascripts/' + String(dirResponse) + '/:/data:ro sengine/app-testing node sample.js')
+      console.log(dirResponse)
+      execPromise('docker run --read-only --rm -v `pwd`/public/javascripts/' + String(dirResponse) + '/:/data:ro sengine/javascript node sample.js')
         .then(function (response) {
+          console.log(response)
           // need to get standard errors working!!
           console.log("ran docker!: ", response.stdout)
           res.send(response);
