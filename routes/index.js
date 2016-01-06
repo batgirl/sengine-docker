@@ -35,14 +35,17 @@ router.post('/javascript', function(req, res, next) {
     fs.writeFile('public/javascripts/' + String(dirResponse) + '/sample.js', req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
-      console.log(dirResponse)
+      console.log(dirResponse);
       execPromise('docker run --read-only --rm -v `pwd`/public/javascripts/' + String(dirResponse) + '/:/data:ro sengine/javascript node sample.js')
         .then(function (response) {
-          console.log(response)
+          console.log('stderr:  ' + response.stderr)
           // need to get standard errors working!!
-          console.log("ran docker!: ", response.stdout)
+          console.log("stdout:  " + response.stdout)
           res.send(response);
           return response;
+        })
+        .fail(function (err) {
+          res.send(err);
         })
         .then(function (response) {
           console.log("about to delete");

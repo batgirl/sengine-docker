@@ -1,0 +1,1 @@
+console.log((function foo() {conle.log('yo')} foo())())
