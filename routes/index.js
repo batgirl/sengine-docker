@@ -41,7 +41,6 @@ function executionEnvironment (language, command, fileName, req, res) {
       execPromise('docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
         .then(function (response) {
           console.log('stderr:  ' + response.stderr)
-          // need to get standard errors working!!
           console.log("stdout:  " + response.stdout)
           res.send(response);
           return response;
@@ -51,7 +50,8 @@ function executionEnvironment (language, command, fileName, req, res) {
         })
         .then(function (response) {
           console.log("about to delete");
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse))
+          execPromise('docker rm `docker ps --no-trunc -aq`');
+          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         });
     });
   });
