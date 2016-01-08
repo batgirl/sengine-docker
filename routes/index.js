@@ -78,7 +78,7 @@ function hostEnvironment (language, fileName, req, res) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro kevgary/static-host')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8080 -d kevgary/static-host')
         .then(function (response) {
           // console.log('stderr:  ' + response.stderr)
           // console.log("stdout:  " + response.stdout)
