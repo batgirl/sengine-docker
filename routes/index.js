@@ -89,10 +89,10 @@ function hostEnvironment (language, fileName, req, res) {
       console.log(dirResponse);
       var randomLocal = randomizePort(localPortArray);
       var randomDocker = randomizePort(dockerPortArray);
-      var randomLocalPort = randomLocalPort[randomLocal];
+      var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':' + Number(randomDockerPort) + ' -d kevgary/static-host')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
         .then(function (response) {
           // console.log('stderr:  ' + response.stderr)
           // console.log("stdout:  " + response.stdout)
