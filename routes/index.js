@@ -1,4 +1,4 @@
- var express = require('express');
+var express = require('express');
 var router = express.Router();
 
 var Promise = require('promise');
@@ -16,12 +16,24 @@ var randomString = function(length) {
   }
   return text;
 }
+var randomDirName = new Promise(function (resolve, reject) {
+  resolve(randomString(Math.floor(Math.random() * (12 - 2 + 1)) + 2));
+});
+
+//random port
+var portArray = [];  //should be env variable
+var initializePortArray = function (min, max) {
+  for (var i = min; i < max; i++) {
+    portArray.push(i);
+  }
+  return (portArray);
+};
+initializePortArray(3000, 5000);
+var randomizePort = function (portArray) {
+  return (Math.floor(Math.random() * (portArray.length)));
+};
 
 function executionEnvironment (language, command, fileName, req, res) {
-  var randomDirName = new Promise(function (resolve, reject) {
-    resolve(randomString(Math.floor(Math.random() * (12 - 2 + 1)) + 2));
-  });
-
   randomDirName.then(function (dirResponse) {
     return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
       .then(function (response) {
@@ -58,10 +70,6 @@ function executionEnvironment (language, command, fileName, req, res) {
 }
 
 function hostEnvironment (language, fileName, req, res) {
-  var randomDirName = new Promise(function (resolve, reject) {
-    resolve(randomString(Math.floor(Math.random() * (12 - 2 + 1)) + 2));
-  });
-
   randomDirName.then(function (dirResponse) {
     return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
       .then(function (response) {
@@ -78,14 +86,16 @@ function hostEnvironment (language, fileName, req, res) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8080 -d kevgary/static-host')
+      var randomNum = randomizePort(portArray);
+      var randomPort = portArray[randomNum];
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomPort) + ':8080 -d kevgary/static-host')
         .then(function (response) {
           // console.log('stderr:  ' + response.stderr)
           // console.log("stdout:  " + response.stdout)
           // res.send(response);
           // return response;
           console.log('yoo0000999991111------')
-          res.send(response);
+          res.send('http://104.236.15.225:' + String(randomPort));
           return response;
         })
         .fail(function (err) {
