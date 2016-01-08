@@ -25,9 +25,10 @@ var localPortArray = [];  //should be env variable
 var dockerPortArray = [];  //should be env variable
 var initializePortArrays = function (min, max) {
   for (var i = min; i < max; i++) {
-    portArray.push(i);
+    localPortArray.push(i);
+    dockerPortArray.push(i);
   }
-  return (portArray);
+  return (localPortArray);
 };
 initializePortArrays(3000, 5000);
 var randomizePort = function (portArray) {
