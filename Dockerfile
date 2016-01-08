@@ -22,19 +22,44 @@
 
 # WORKDIR /data
 
-FROM node:4.2.2
+# FROM node:4.2.2 
 
-# Create app directory
-RUN mkdir -p /usr/src/all-lang-server
-WORKDIR /usr/src/all-lang-server
+# # Create app directory
+# RUN mkdir -p /usr/src/all-lang-server
+# WORKDIR /usr/src/all-lang-server
 
-# Install app dependencies
-COPY package.json /usr/src/all-lang-server/
-RUN npm install
+# # Install app dependencies
+# COPY package.json /usr/src/all-lang-server/
+# RUN npm install
 
-# Bundle app source
-COPY . /usr/src/all-lang-server
+# # Bundle app source
+# COPY . /usr/src/all-lang-server
 
-EXPOSE 3000
+# EXPOSE 8080
 
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
+
+# FROM perl
+
+# RUN mkdir /data
+
+# WORKDIR /data
+
+
+# FROM node:4.2.2
+
+# # Create app directory
+# RUN mkdir -p /usr/src/static-host
+# WORKDIR /usr/src/static-host
+
+# # Install app dependencies
+# COPY package.json /usr/src/static-host/
+# RUN npm install
+
+# # Bundle app source
+# COPY . /usr/src/static-host
+
+# EXPOSE 8080
+
+# CMD [ "npm", "start" ]
+
