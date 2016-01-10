@@ -46,7 +46,8 @@ function executionEnvironment (language, command, fileName, req, res) {
             return dirResponse;
           })
       })
-  }).then(function (dirResponse) {
+  })
+  .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
@@ -81,7 +82,8 @@ function hostEnvironment (language, fileName, req, res) {
             return dirResponse;
           })
       })
-  }).then(function (dirResponse) {
+  })
+  .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
@@ -99,11 +101,14 @@ function hostEnvironment (language, fileName, req, res) {
         .fail(function (err) {
           res.send(err);
         })
-        // .then(function (response) {
-        //   console.log("about to delete");
-        //   execPromise('docker rm `docker ps --no-trunc -aq`');
-        //   execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
-        // });
+        .then(function (response) {
+          console.log("about to delete");
+          execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
+          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+        })
+        .then(function (response) {
+          execPromise('timeout -t 6 docker rm `docker ps --no-trunc -aq`s');          
+        })
     });
   });
 }
