@@ -8,6 +8,8 @@ var fs = require('fs');
 var exec = require('child_process').exec,
     child;
 
+var detectLang = require('lang-detector');
+
 var randomString = function(length) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -56,11 +58,11 @@ function executionEnvironment (language, command, fileName, req, res) {
         .then(function (response) {
           console.log('stderr:  ' + response.stderr)
           console.log("stdout:  " + response.stdout)
-          res.send(response);
+          res.json(response);
           return response;
         })
         .fail(function (err) {
-          res.send(err);
+          res.json(err);
         })
         .then(function (response) {
           console.log("about to delete");
@@ -96,11 +98,11 @@ function hostEnvironment (language, fileName, req, res) {
       execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
         .then(function (response) {
           console.log('yoo0000999991111------')
-          res.send('http://104.236.15.225:' + String(randomLocalPort));
+          res.json('http://104.236.15.225:' + String(randomLocalPort));
           return response;
         })
         .fail(function (err) {
-          res.send(err);
+          res.json(err);
         })
         // .then(function (response) {
         //   console.log("about to delete");
@@ -111,21 +113,39 @@ function hostEnvironment (language, fileName, req, res) {
   });
 }
 
-router.post('/javascript', function(req, res, next) {
-  executionEnvironment('javascript', 'node', 'sample.js', req, res);
+router.post('/execute', function(req, res, next) {
+  console.log(detectLang('console.log("hello world";'));
+  if (detectLang(req.body.data) == 'JavaScript') {
+    executionEnvironment('javascript', 'node', 'sample.js', req, res);
+  } else if (detectLang(req.body.data) == 'Ruby') { 
+    executionEnvironment('ruby', 'ruby', 'sample.rb', req, res);
+  } else if (detectLang(req.body.data) == 'Python') { 
+    executionEnvironment('python', 'python', 'sample.py', req, res);
+  } else if (detectLang(req.body.data) == 'HTML') { 
+    hostEnvironment('html', 'index.html', req, res);
+  } else if (detectLang(req.body.data) == 'Java') { 
+    res.json('java');
+  } else {
+    res.json('language not detected')
+  }
+
 });
 
-router.post('/ruby', function(req, res, next) {
-  executionEnvironment('ruby', 'ruby', 'sample.rb', req, res);
-});
+// router.post('/javascript', function(req, res, next) {
+//   executionEnvironment('javascript', 'node', 'sample.js', req, res);
+// });
 
-router.post('/python', function(req, res, next) {
-  executionEnvironment('python', 'python', 'sample.py', req, res);
-});
+// router.post('/ruby', function(req, res, next) {
+//   executionEnvironment('ruby', 'ruby', 'sample.rb', req, res);
+// });
 
-router.post('/html', function(req ,res, next) {
-  hostEnvironment('html', 'index.html', req, res);
-})
+// router.post('/python', function(req, res, next) {
+//   executionEnvironment('python', 'python', 'sample.py', req, res);
+// });
+
+// router.post('/html', function(req ,res, next) {
+//   hostEnvironment('html', 'index.html', req, res);
+// })
 
 // router.post('/php', function(req, res, next) {
 //   executionEnvironment('php', 'php', 'sample.php', req, res);
