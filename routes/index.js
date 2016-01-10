@@ -104,9 +104,6 @@ function hostEnvironment (language, fileName, req, res) {
           // execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
           execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         })
-        .then(function (response) {
-          execPromise('timeout -t 6 docker rm `docker ps --no-trunc -aq`s');          
-        })
     });
   });
 }
