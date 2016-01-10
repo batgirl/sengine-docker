@@ -46,7 +46,8 @@ function executionEnvironment (language, command, fileName, req, res) {
             return dirResponse;
           })
       })
-  }).then(function (dirResponse) {
+  })
+  .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
@@ -81,7 +82,8 @@ function hostEnvironment (language, fileName, req, res) {
             return dirResponse;
           })
       })
-  }).then(function (dirResponse) {
+  })
+  .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
@@ -93,17 +95,18 @@ function hostEnvironment (language, fileName, req, res) {
 
       execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
         .then(function (response) {
+          console.log('yoo0000999991111------')
           res.send('http://104.236.15.225:' + String(randomLocalPort));
           return response;
         })
         .fail(function (err) {
           res.send(err);
         })
-        .then(function (response) {
-          console.log("about to delete");
-          // execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
-        })
+        // .then(function (response) {
+        //   console.log("about to delete");
+        //   execPromise('docker rm `docker ps --no-trunc -aq`');
+        //   execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+        // });
     });
   });
 }
