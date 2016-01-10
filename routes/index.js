@@ -21,27 +21,31 @@ var randomDirName = new Promise(function (resolve, reject) {
 });
 
 //random port
-// var localPortArray = [];  //should be env variable
-// var dockerPortArray = [];  //should be env variable
-// var initializePortArrays = function (min, max) {
-//   for (var i = min; i < max; i++) {
-//     localPortArray.push(i);
-//     dockerPortArray.push(i);
-//   }
-//   return (localPortArray);
-// };
-// initializePortArrays(3000, 5000);
-// var randomizePort = function (portArray) {
-//   return (Math.floor(Math.random() * (portArray.length)));
-// };
-//timelimit -t 20 -T 10 
+var localPortArray = [];  //should be env variable
+var dockerPortArray = [];  //should be env variable
+var initializePortArrays = function (min, max) {
+  for (var i = min; i < max; i++) {
+    localPortArray.push(i);
+    dockerPortArray.push(i);
+  }
+  return (localPortArray);
+};
+initializePortArrays(3000, 5000);
+var randomizePort = function (portArray) {
+  return (Math.floor(Math.random() * (portArray.length)));
+};
 
 function executionEnvironment (language, command, fileName, req, res) {
   randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir languages/' + String(language) + '/' + String(dirResponse));
-  }).then(function (response) {
-    console.log(response);
-    return execPromise('touch languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName));
+    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
+      .then(function (response) {
+        console.log(response)
+        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
+          .then(function (response) {
+            console.log(response)
+            return dirResponse;
+          })
+      })
   }).then(function (dirResponse) {
     fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
@@ -65,10 +69,15 @@ function executionEnvironment (language, command, fileName, req, res) {
 
 function hostEnvironment (language, fileName, req, res) {
   randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir languages/' + String(language) + '/' + String(dirResponse));
-  }).then(function (response) {
-    console.log(response);
-    return execPromise('touch languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName));
+    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
+      .then(function (response) {
+        console.log(response)
+        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
+          .then(function (response) {
+            console.log(response)
+            return dirResponse;
+          })
+      })
   }).then(function (dirResponse) {
     fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
