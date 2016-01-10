@@ -37,10 +37,10 @@ var randomizePort = function (portArray) {
 
 function executionEnvironment (language, command, fileName, req, res) {
   randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
+    return execPromise('mkdir languages/' + String(language) + '/' + String(dirResponse))
       .then(function (response) {
         console.log(response)
-        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
+        return execPromise('touch languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
           .then(function (response) {
             console.log(response)
             return dirResponse;
@@ -48,11 +48,11 @@ function executionEnvironment (language, command, fileName, req, res) {
       })
   })
   .then(function (dirResponse) {
-    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
+    fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('timelimit -t 20 -T 10 docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
+      execPromise('timelimit -t 20 -T 10 docker run --read-only --rm -v `pwd`/languages/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
         .then(function (response) {
           console.log('stderr:  ' + response.stderr)
           console.log("stdout:  " + response.stdout)
@@ -65,7 +65,7 @@ function executionEnvironment (language, command, fileName, req, res) {
         .then(function (response) {
           console.log("about to delete");
           execPromise('docker rm `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+          execPromise('rm -rf languages/' + String(language) + '/' + String(dirResponse));
         });
     });
   });
@@ -73,10 +73,10 @@ function executionEnvironment (language, command, fileName, req, res) {
 
 function hostEnvironment (language, fileName, req, res) {
   randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
+    return execPromise('mkdir languages/' + String(language) + '/' + String(dirResponse))
       .then(function (response) {
         console.log(response)
-        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
+        return execPromise('touch languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
           .then(function (response) {
             console.log(response)
             return dirResponse;
@@ -84,7 +84,7 @@ function hostEnvironment (language, fileName, req, res) {
       })
   })
   .then(function (dirResponse) {
-    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
+    fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
@@ -93,7 +93,7 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
+      execPromise('docker run --read-only -v `pwd`/languages/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/languages/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
         .then(function (response) {
           // console.log('stderr:  ' + response.stderr)
           // console.log("stdout:  " + response.stdout)
@@ -108,11 +108,11 @@ function hostEnvironment (language, fileName, req, res) {
         })
         .then(function (response) {
           console.log("about to delete");
-          execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+          // execPromise('docker kill $(docker ps -a)');
+          execPromise('rm -rf languages/' + String(language) + '/' + String(dirResponse));
         })
         .then(function (response) {
-          execPromise('timeout -t 6 docker rm `docker ps --no-trunc -aq`s');          
+          // execPromise('docker rm $(docker ps -a)');          
         })
     });
   });
