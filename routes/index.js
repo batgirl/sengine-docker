@@ -46,8 +46,7 @@ function executionEnvironment (language, command, fileName, req, res) {
             return dirResponse;
           })
       })
-  })
-  .then(function (dirResponse) {
+  }).then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
@@ -82,8 +81,7 @@ function hostEnvironment (language, fileName, req, res) {
             return dirResponse;
           })
       })
-  })
-  .then(function (dirResponse) {
+  }).then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
