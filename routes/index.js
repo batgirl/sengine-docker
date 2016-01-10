@@ -101,7 +101,7 @@ function hostEnvironment (language, fileName, req, res) {
         })
         .then(function (response) {
           console.log("about to delete");
-          execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
+          // execPromise('timeout -t 10 docker kill `docker ps --no-trunc -aq`');
           execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         })
         .then(function (response) {
