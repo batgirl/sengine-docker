@@ -47,22 +47,25 @@ function executionEnvironment (language, command, fileName, req, res) {
           })
       })
   }).then(function (dirResponse) {
-    fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
+    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only --rm -v `pwd`/languages/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName)).then(function (response) {
-        console.log('stderr:  ' + response.stderr);
-        console.log("stdout:  " + response.stdout);
-        res.send(response);
-        return response;
-      }).fail(function (err) {
-        res.send(err);
-      }).then(function (response) {
-        console.log("about to delete");
-        execPromise('docker rm `docker ps --no-trunc -aq`');
-        execPromise('rm -rf languages/' + String(language) + '/' + String(dirResponse));
-      });
+      execPromise('docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
+        .then(function (response) {
+          console.log('stderr:  ' + response.stderr)
+          console.log("stdout:  " + response.stdout)
+          res.send(response);
+          return response;
+        })
+        .fail(function (err) {
+          res.send(err);
+        })
+        .then(function (response) {
+          console.log("about to delete");
+          execPromise('docker rm `docker ps --no-trunc -aq`');
+          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+        });
     });
   });
 }
@@ -79,21 +82,28 @@ function hostEnvironment (language, fileName, req, res) {
           })
       })
   }).then(function (dirResponse) {
-    fs.writeFile('languages/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
+    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only -v `pwd`/languages/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/languages/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host').then(function (response) {
-        res.send('http://104.236.15.225:' + String(randomLocalPort));
-        return response;
-      }).fail(function (err) {
-        res.send(err);
-      }).then(function (response) {
-        console.log("about to delete");
-        // execPromise('docker kill $(docker ps -a)');
-        // execPromise('docker rm $(docker ps -a)');         
-        execPromise('rm -rf languages/' + String(language) + '/' + String(dirResponse));
-      });
+      var randomLocal = randomizePort(localPortArray);
+      var randomDocker = randomizePort(dockerPortArray);
+      var randomLocalPort = localPortArray[randomLocal];
+      var randomDockerPort = dockerPortArray[randomDocker];
+
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p ' + Number(randomLocalPort) + ':8080 -d kevgary/static-host')
+        .then(function (response) {
+          res.send('http://104.236.15.225:' + String(randomLocalPort));
+          return response;
+        })
+        .fail(function (err) {
+          res.send(err);
+        })
+        // .then(function (response) {
+        //   console.log("about to delete");
+        //   execPromise('docker rm `docker ps --no-trunc -aq`');
+        //   execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+        // });
     });
   });
 }
