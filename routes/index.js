@@ -52,7 +52,7 @@ function executionEnvironment (language, command, fileName, req, res) {
       if(err) throw err;
       console.log('wrote to file');
       console.log(dirResponse);
-      execPromise('docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
+      execPromise('timelimit -t 20 -T 10 docker run --read-only --rm -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(command) + ' ' + String(fileName))
         .then(function (response) {
           console.log('stderr:  ' + response.stderr)
           console.log("stdout:  " + response.stdout)
@@ -106,11 +106,11 @@ function hostEnvironment (language, fileName, req, res) {
         .fail(function (err) {
           res.send(err);
         })
-        // .then(function (response) {
-        //   console.log("about to delete");
-        //   execPromise('docker rm `docker ps --no-trunc -aq`');
-        //   execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
-        // });
+        .then(function (response) {
+          console.log("about to delete");
+          // execPromise('docker rm `docker ps --no-trunc -aq`');
+          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+        });
     });
   });
 }
