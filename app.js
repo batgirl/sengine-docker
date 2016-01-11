@@ -5,11 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var responseTime = require('response-time');
 
 var routes = require('./routes/index');
 
 var app = express();
 app.use(cors());
+app.use(responseTime());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

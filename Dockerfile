@@ -45,21 +45,34 @@
 
 # WORKDIR /data
 
+# FROM java
 
-# FROM node:4.2.2
+# RUN mkdir /data
 
-# # Create app directory
-# RUN mkdir -p /usr/src/static-host
-# WORKDIR /usr/src/static-host
+# WORKDIR /data
 
-# # Install app dependencies
-# COPY package.json /usr/src/static-host/
-# RUN npm install
 
-# # Bundle app source
-# COPY . /usr/src/static-host
+FROM node:4.2.2
 
-# EXPOSE 8080
+# Create app directory
+RUN mkdir -p /usr/src/static-host
+WORKDIR /usr/src/static-host
+
+# Install app dependencies
+COPY package.json /usr/src/static-host/
+RUN npm install
+
+# Bundle app source
+COPY . /usr/src/static-host
 
 # CMD [ "npm", "start" ]
 
+# FROM ubuntu:14.04
+
+# RUN apt-get update
+# RUN apt-get install software-properties-common -y
+# RUN add-apt-repository ppa:webupd8team/java -y
+# RUN apt-get update
+# RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+# RUN apt-get install oracle-java8-installer -y
+# RUN apt-get install oracle-java8-set-default
