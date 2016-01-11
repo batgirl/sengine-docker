@@ -75,6 +75,7 @@ function executionEnvironment (language, command, fileName, data, req, res) {
         })
         .then(function (response) {
           console.log("about to delete");
+          execPromise('docker kill `docker ps --no-trunc -aq`');
           execPromise('docker rm `docker ps --no-trunc -aq`');
           execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         });
