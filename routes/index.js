@@ -67,7 +67,11 @@ function executionEnvironment (language, command, fileName, data, req, res) {
           return response;
         })
         .fail(function (err) {
-          res.json(err);
+          res.send({
+            "stdout": response.stdout,
+            "stderr": response.stderr,
+            "language": language            
+          });
         })
         .then(function (response) {
           console.log("about to delete");
