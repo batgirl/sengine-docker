@@ -17,9 +17,14 @@
     "ftp": "^0.3.10",
     "jade": "~1.11.0",
     "lang-detector": "^1.0.6",
+    "lodash": "^3.10.1",
     "morgan": "~1.6.1",
+    "pg": "^4.4.3",
+    "pg-hstore": "^2.3.2",
     "promise": "^7.1.1",
     "response-time": "^2.3.1",
+    "sequelize": "^3.17.1",
+    "sequelize-cli": "^2.3.0",
     "serve-favicon": "~2.3.0"
   }
 }
