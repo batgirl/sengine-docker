@@ -132,10 +132,11 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --expose=401 --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -p 500:450 kevgary/static-host npm start')
+      execPromise('docker run --expose=' + String(randomDockerPort) + ' --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -P kevgary/static-host')
         .then(function (response) {
-          console.log('yoo0000999991111------')
-          res.json('http://104.236.15.225:' + String(randomLocalPort));
+
+          console.log('yoo0000999991111------' + response)
+          res.json('http://104.236.15.225:' + String(randomDockerPort));
           return response;
         })
         .fail(function (err) {
