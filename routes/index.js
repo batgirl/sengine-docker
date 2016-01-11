@@ -66,7 +66,7 @@ function executionEnvironment (language, command, fileName, data, req, res) {
           // console.log(res._headers['x-response-time']);
           return response;
         })
-        .fail(function (err) {
+        .fail(function (response) {
           res.send({
             "stdout": response.stdout,
             "stderr": response.stderr,
