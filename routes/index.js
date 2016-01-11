@@ -66,7 +66,10 @@ function executionEnvironment (language, command, fileName, data, req, res) {
           return response;
         })
         .fail(function (err) {
-          res.json(err);
+          res.send({
+            "response": response,
+            "language": language
+          });
         })
         .then(function (response) {
           console.log("about to delete");
@@ -137,7 +140,7 @@ function hostEnvironment (language, fileName, req, res) {
 
       execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -P kevgary/static-host')
         .then(function (response) {
-          setTimeout(execPromise('kill $(ps -ef | grep node', 10000), 10000);
+          setTimeout(execPromise('kill $(ps -ef | grep node)', 10000), 10000);
           console.log('yoo0000999991111------' + response)
           res.json('http://104.236.15.225:' + String(randomDockerPort));
           return response;
