@@ -59,7 +59,8 @@ function executionEnvironment (language, command, fileName, data, req, res) {
           console.log('stderr:  ' + response.stderr)
           console.log("stdout:  " + response.stdout)
           res.send({
-            "response": response,
+            "stdout": response.stdout,
+            "stderr": response.stderr,
             "language": language            
           });
           // console.log(res._headers['x-response-time']);
