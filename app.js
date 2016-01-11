@@ -13,6 +13,50 @@ var app = express();
 app.use(cors());
 app.use(responseTime());
 
+//expose socket.io
+var io = socket_io();
+app.io = io;
+
+io.on('connection', function (socket) {
+  socket.on('loadData', function () {
+    models.Data.findAll({}).then(function (data) {
+      io.emit('data', data);
+    });
+  });
+  socket.on('newEmptyRow', function () {
+    models.Data.create({
+      code: = null,
+      stdout: = null,
+      stderr: = null,
+      resTime: = null,
+      language: = null
+    }).then(function (row) {
+      res.json(row);
+    });
+  });
+  socket.on('FillRow', function () {
+    models.Data.find({
+      where: {
+        resTime: null
+      }
+    }).then(function (row) {
+      if (row) {
+        user.updateAttributes({
+          code: = req.body.code,
+          stdout: = req.body.stdout,
+          stderr: = req.body.stderr,
+          resTime: = req.body.resTime,
+          language: = req.body.language
+        }).then(function (row) {
+          res.json(row);
+        });
+      } else {
+        res.json('no requests pending in database');
+      }
+    });
+  });
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));

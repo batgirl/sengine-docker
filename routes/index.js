@@ -10,6 +10,10 @@ var exec = require('child_process').exec,
 
 var detectLang = require('lang-detector');
 
+//sequelize
+var models = require('../models/index');
+
+
 var randomString = function(length) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -204,6 +208,9 @@ router.post('/host', function (req, res, next) {
 // router.post('/perl', function(req, res, next) {
 //   executionEnvironment('perl', 'perl', 'sample.pl', req, res);
 // });
+
+//-----DB ROUTES------
+
 
 
 module.exports = router;
