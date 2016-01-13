@@ -11,7 +11,7 @@ var exec = require('child_process').exec,
 var detectLang = require('lang-detector');
 
 //sequelize
-var models = require('../models/index');
+//var models = require('../models/index');
 
 
 var randomString = function(length) {

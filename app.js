@@ -14,8 +14,8 @@ app.use(cors());
 app.use(responseTime());
 
 //expose socket.io
-var io = socket_io();
-app.io = io;
+//var io = socket_io();
+//app.io = io;
 
 // io.on('connection', function (socket) {
 //   socket.on('loadData', function () {
