@@ -151,7 +151,7 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8080 -d sengine/serve-static-host')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8090 -d sengine/serve-static-host')
         .then(function (response) {
           // setTimeout(execPromise('kill $(ps -ef | grep node)', 10000), 10000);
           console.log('------------' + response)
