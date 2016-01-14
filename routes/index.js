@@ -136,11 +136,11 @@ function hostEnvironment (language, fileName, req, res) {
           })
       })
   })
-  .then(function (dirResponse){
-    execPromise('docker kill `docker ps --no-trunc -aq`');
-    execPromise('docker rm `docker ps --no-trunc -aq`');
-    return dirResponse;
-  })
+  // .then(function (dirResponse){
+  //   execPromise('docker kill `docker ps --no-trunc -aq`');
+  //   execPromise('docker rm `docker ps --no-trunc -aq`');
+  //   return dirResponse;
+  // })
   .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
@@ -151,7 +151,7 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -p 4444 kevgary/static-host -l 4444')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -p kevgary/static-host')
         .then(function (response) {
           setTimeout(execPromise('kill $(ps -ef | grep node)', 10000), 10000);
           console.log('------------' + response)
