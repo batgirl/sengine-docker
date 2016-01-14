@@ -136,11 +136,12 @@ function hostEnvironment (language, fileName, req, res) {
           })
       })
   })
-  // .then(function (dirResponse){
-  //   execPromise('docker kill `docker ps --no-trunc -aq`');
-  //   execPromise('docker rm `docker ps --no-trunc -aq`');
-  //   return dirResponse;
-  // })
+  .then(function (dirResponse){
+    execPromise('docker kill $(docker ps -a)').then(function (response) {
+      execPromise('docker rm $(docker ps -a)');
+    })
+    return dirResponse;
+  })
   .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
