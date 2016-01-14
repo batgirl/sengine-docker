@@ -88,41 +88,41 @@ function executionEnvironment (language, command, fileName, data, req, res) {
   });
 }
 
-function compiledEnvironment (language, commands, fileName, req, res) {
-  randomDirName.then(function (dirResponse) {
-    return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
-      .then(function (response) {
-        console.log(response)
-        return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
-          .then(function (response) {
-            console.log(response)
-            return dirResponse;
-          })
-      })
-  })
-  .then(function (dirResponse) {
-    fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
-      if(err) throw err;
-      console.log('wrote to file');
-      console.log(dirResponse);
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(commands[0]) + ' ' + String(fileName))
-        .then(function (response) {
-          console.log('stderr:  ' + response.stderr)
-          console.log("stdout:  " + response.stdout)
-          res.json(response);
-          return response;
-        })
-        .fail(function (err) {
-          res.json(err);
-        })
-        .then(function (response) {
-          console.log("about to delete");
-          execPromise('docker rm `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
-        });
-    });
-  });
-}
+// function compiledEnvironment (language, commands, fileName, req, res) {
+//   randomDirName.then(function (dirResponse) {
+//     return execPromise('mkdir public/' + String(language) + '/' + String(dirResponse))
+//       .then(function (response) {
+//         console.log(response)
+//         return execPromise('touch public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName))
+//           .then(function (response) {
+//             console.log(response)
+//             return dirResponse;
+//           })
+//       })
+//   })
+//   .then(function (dirResponse) {
+//     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
+//       if(err) throw err;
+//       console.log('wrote to file');
+//       console.log(dirResponse);
+//       execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/data:ro sengine/' + String(language) + ' ' + String(commands[0]) + ' ' + String(fileName))
+//         .then(function (response) {
+//           console.log('stderr:  ' + response.stderr)
+//           console.log("stdout:  " + response.stdout)
+//           res.json(response);
+//           return response;
+//         })
+//         .fail(function (err) {
+//           res.json(err);
+//         })
+//         .then(function (response) {
+//           console.log("about to delete");
+//           execPromise('docker rm `docker ps --no-trunc -aq`');
+//           execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+//         });
+//     });
+//   });
+// }
 
 function hostEnvironment (language, fileName, req, res) {
   randomDirName.then(function (dirResponse) {
@@ -136,11 +136,11 @@ function hostEnvironment (language, fileName, req, res) {
           })
       })
   })
-  .then(function (dirResponse){
-    execPromise('docker kill `docker ps --no-trunc -aq`');
-    execPromise('docker rm `docker ps --no-trunc -aq`');
-    return dirResponse;
-  })
+  // .then(function (dirResponse){
+  //   execPromise('docker kill `docker ps --no-trunc -aq`');
+  //   execPromise('docker rm `docker ps --no-trunc -aq`');
+  //   return dirResponse;
+  // })
   .then(function (dirResponse) {
     fs.writeFile('public/' + String(language) + '/' + String(dirResponse) + '/' + String(fileName), req.body.data, function (err) {
       if(err) throw err;
@@ -177,10 +177,12 @@ router.post('/execute', function (req, res, next) {
     executionEnvironment('ruby', 'ruby', 'sample.rb', ("a = Time.now" + "\n" + req.body.data + "\n" + "puts (Time.now - a)"), req, res);
   } else if (detectLang(req.body.data) == 'Python') { 
     executionEnvironment('python', 'python', 'sample.py', 'import timeit' + "\n" + "start_time = timeit.default_timer()" + "\n" + req.body.data + "\n" + "print(timeit.default_timer() - start_time)", req, res);
-  } else if (detectLang(req.body.data) == 'Java') { 
-    compiledEnvironment('java', ['javac'], 'sample.java', req, res);
-    res.json('java');
-  } else {
+  }
+  // } else if (detectLang(req.body.data) == 'Java') { 
+  //   compiledEnvironment('java', ['javac'], 'sample.java', req, res);
+  //   res.json('java');
+  // } 
+  else {
     console.log(detectLang(req.body.data));
     res.json('language not detected')
   }
