@@ -151,7 +151,7 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8080 -d kevgary/static-host')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 49160:8080 -d sengine/serve-static-host')
         .then(function (response) {
           // setTimeout(execPromise('kill $(ps -ef | grep node)', 10000), 10000);
           console.log('------------' + response)
@@ -164,7 +164,7 @@ function hostEnvironment (language, fileName, req, res) {
         .then(function (response) {
           console.log("about to delete");
         //   execPromise('docker rm `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+          // execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         });
     });
   });
