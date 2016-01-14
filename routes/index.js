@@ -151,7 +151,7 @@ function hostEnvironment (language, fileName, req, res) {
       var randomLocalPort = localPortArray[randomLocal];
       var randomDockerPort = dockerPortArray[randomDocker];
 
-      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -d -p kevgary/static-host')
+      execPromise('docker run --read-only -v `pwd`/public/' + String(language) + '/' + String(dirResponse) + '/:/usr/src/static-host/public/:ro -p 4000:8080 -d kevgary/static-host')
         .then(function (response) {
           setTimeout(execPromise('kill $(ps -ef | grep node)', 10000), 10000);
           console.log('------------' + response)
@@ -187,7 +187,6 @@ router.post('/execute', function (req, res, next) {
 });
 
 router.post('/host', function (req, res, next) {
-  console.log('yoo')
   hostEnvironment('html', 'index.html', req, res);
 });
 

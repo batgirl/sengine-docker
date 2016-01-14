@@ -65,7 +65,9 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/static-host
 
-# CMD [ "npm", "start" ]
+EXPOSE 8080
+
+CMD [ "npm", "start" ]
 
 # FROM ubuntu:14.04
 
