@@ -52,7 +52,7 @@
 # WORKDIR /data
 
 
-FROM node:4.2.2
+FROM node:argon
 
 # Create app directory
 RUN mkdir -p /usr/src/static-host
