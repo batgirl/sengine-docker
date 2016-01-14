@@ -164,7 +164,7 @@ function hostEnvironment (language, fileName, req, res) {
         .then(function (response) {
           console.log("about to delete");
         //   execPromise('docker rm `docker ps --no-trunc -aq`');
-          execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
+          // execPromise('rm -rf public/' + String(language) + '/' + String(dirResponse));
         });
     });
   });
